@@ -1,7 +1,14 @@
 import {
   DirectionalLight,
+  LineBasicMaterial,
+  LineDashedMaterial,
   Mesh,
+  MeshBasicMaterial,
+  MeshLambertMaterial,
+  MeshMatcapMaterial,
+  MeshNormalMaterial,
   MeshPhongMaterial,
+  MeshToonMaterial,
   Object3D,
   PointLight,
   SphereBufferGeometry,
@@ -12,22 +19,16 @@ const segment = 32
 const sphere = new SphereBufferGeometry(1, segment, segment); //球体为6边形，目的是为了方便我们观察到他在自转
 
 //创建太阳
-const sunMaterial = new MeshPhongMaterial({ emissive: 0xffff00 });
+const sunMaterial = new MeshMatcapMaterial();
 const sunMesh = new Mesh(sphere, sunMaterial);
 sunMesh.scale.set(4, 4, 4); //将球体尺寸放大 4 倍
 
 //创建地球
-const earthMaterial = new MeshPhongMaterial({
-  color: 0x2233ff,
-  emissive: 0x112244,
-});
+const earthMaterial = new MeshMatcapMaterial();
 const earthMesh = new Mesh(sphere, earthMaterial);
 
 //创建月球
-const moonMaterial = new MeshPhongMaterial({
-  color: 0x888888,
-  emissive: 0x222222,
-});
+const moonMaterial = new MeshMatcapMaterial();
 const moonMesh = new Mesh(sphere, moonMaterial);
 moonMesh.scale.set(0.5, 0.5, 0.5); //将球体尺寸缩小 0.5 倍
 
@@ -38,7 +39,7 @@ moonOribit.add(moonMesh);
 
 //创建一个 3D 空间，用来容纳地球，相当于地球轨迹空间
 export const earthOrbit = new Object3D();
-earthOrbit.position.x = 20;
+earthOrbit.position.x = 15;
 earthOrbit.add(earthMesh);
 earthOrbit.add(moonOribit);
 

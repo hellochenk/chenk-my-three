@@ -51,6 +51,14 @@ const HelloScene: FC = () => {
       scene.add(solarSystem);
       scene.add(pointLight);
       scene.add(light);
+
+      nodeArr.forEach((item) => {
+        const axes = new Three.AxesHelper(5)
+        const material = axes.material as Three.Material
+        material.depthTest = false
+        axes.renderOrder = 1 // renderOrder 的该值默认为 0，这里设置为 1 ，目的是为了提高优先级，避免被物体本身给遮盖住
+        item.add(axes)
+      })
       
       //创建循环渲染的动画
       const render = (time: number) => {

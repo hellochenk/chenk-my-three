@@ -16,6 +16,9 @@ import {
   DirectionalLight,
   BufferGeometry,
   WireframeGeometry,
+  Material,
+  LineDashedMaterial,
+  LineBasicMaterial,
 } from 'three';
 import type { FC } from 'react';
 import {
@@ -123,6 +126,8 @@ const HelloPrimitives: FC<Props> = (props) => {
 
       const wireframe = new WireframeGeometry(item);
       const line = new LineSegments(wireframe);
+      // const lineMesh = new Mesh(wireframe, new LineBasicMaterial())
+      
 
       meshArr.push(mesh); //将网格添加到网格数组中
       lineArr.push(line); //将网格添加到网格数组中
@@ -156,6 +161,13 @@ const HelloPrimitives: FC<Props> = (props) => {
       scene.add(mesh, lineArr[index]); //将网格添加到场景中
     });
 
+    meshArr.forEach((item) => {
+      const axes = new AxesHelper(15)
+      const material = axes.material as Material
+      material.depthTest = false
+      axes.renderOrder = 1 // renderOrder 的该值默认为 0，这里设置为 1 ，目的是为了提高优先级，避免被物体本身给遮盖住
+      item.add(axes)
+    })
     //添加自动旋转渲染动画
     const render = (time: number) => {
       time = time * 0.001;
