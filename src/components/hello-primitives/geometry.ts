@@ -120,8 +120,8 @@ export const Octahedron = new OctahedronBufferGeometry(
 
 const PlaneWidth = 8;
 const PlaneHeight = 8;
-const WidthSegment = 5;
-const HeightSegment = 4;
+const WidthSegment = 2;
+const HeightSegment = 2;
 export const Plane = new PlaneBufferGeometry(
   PlaneWidth,
   PlaneHeight,

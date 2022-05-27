@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 // import { useRef, useEffect, useCallback } from 'react'
 import { ArcballControls } from 'three/examples/jsm/controls/ArcballControls.js';
 import {
@@ -40,6 +40,8 @@ import {
   // wireframe
 } from './geometry';
 import './index.scss';
+import { createMaterial, getPositionByIndex } from './utils';
+import createText from './my-text';
 
 type Props = {};
 
@@ -52,19 +54,7 @@ const HelloPrimitives: FC<Props> = (props) => {
   const cameraRef = useRef<PerspectiveCamera | null>(null);
 
   // const [isPageLoading, setPageLoading] = useState<boolean>(false);
-  const createMaterial = () => {
-    const material = new MeshPhongMaterial({ side: DoubleSide });
-
-    const hue = Math.floor(Math.random() * 100) / 100; //随机获得一个色相
-    const saturation = 1; //饱和度
-    const luminance = 0.5; //亮度
-
-    material.color.setHSL(hue, saturation, luminance);
-
-    return material;
-  };
-
-  const createInit = useCallback(() => {
+  const createInit = useCallback(async () => {
     if (canvasRef.current === null) {
       return;
     }
@@ -78,41 +68,16 @@ const HelloPrimitives: FC<Props> = (props) => {
     scene.add(axesHelper);
     //初始化镜头
     const camera = new PerspectiveCamera(40, 2, 0.1, 1000);
-    // camera.position.x = 20;
-    // camera.position.z = 400;
-    // camera.position.y = 20;
     camera.lookAt(0, 0, 0);
+    camera.position.set(20, 20, 400);
+    cameraRef.current = camera;
 
     // 创建轨迹
-    const controls = new ArcballControls( camera, canvasRef.current, scene );
-    controls.addEventListener( 'change', function () {
-
-      renderer.render( scene, camera );
-    
-    } );
-    
-    //controls.update() must be called after any manual changes to the camera's transform
-    camera.position.set( 20, 20, 400 );
+    const controls = new ArcballControls(camera, canvasRef.current, scene);
+    controls.addEventListener('change', function () {
+      renderer.render(scene, camera);
+    });
     controls.update();
-    // controls.enabled = !0;
-    // controls.target = new Vector3();
-    // controls.minDistance = 0;
-    // controls.maxDistance = 2000;
-    // controls.minPolarAngle = Math.PI / 2;
-    // controls.maxPolarAngle = Math.PI / 2;
-    // // 禁用缩放
-    // controls.enableZoom = !1;
-    // // 禁用旋转
-    // controls.enableRotate = !1;
-    // controls.panSpeed = 2;
-
-    // // 修改控件的默认触摸选项，设置为单指双指都为平移操作
-    // controls.touches = {
-    //     ONE: TOUCH.PAN,
-    //     TWO: TOUCH.PAN,
-    // };
-    // controls.update();
-    cameraRef.current = camera;
 
     //初始化渲染器
     const renderer = new WebGLRenderer({
@@ -120,23 +85,22 @@ const HelloPrimitives: FC<Props> = (props) => {
     });
     rendererRef.current = renderer;
 
-    //添加 2 盏灯光
-    const light0 = new DirectionalLight(0xffffff, .4);
+    //添加灯光
+    const light0 = new DirectionalLight(0xffffff, 0.4);
     light0.position.set(-20, 20, -20);
     scene.add(light0);
 
-    const light2 = new DirectionalLight(0xffffff, .4);
+    const light2 = new DirectionalLight(0xffffff, 0.4);
     light0.position.set(20, -20, 20);
     scene.add(light2);
 
-    const light3 = new DirectionalLight(0xffffff, .4);
+    const light3 = new DirectionalLight(0xffffff, 0.4);
     light0.position.set(-20, -20, 20);
     scene.add(light3);
 
-    const light4 = new DirectionalLight(0xffffff, .4);
+    const light4 = new DirectionalLight(0xffffff, 0.4);
     light0.position.set(20, 20, -20);
     scene.add(light4);
-
 
     //获得各个 solid 类型的图元实例，并添加到 solidPrimitivesArr 中
     const solidPrimitivesArr: BufferGeometry[] = [];
@@ -147,14 +111,18 @@ const HelloPrimitives: FC<Props> = (props) => {
     solidPrimitivesArr.push(Polyhedron, ring, myShape, Sphere, Tetrahedron);
 
     solidPrimitivesArr.push(Torus);
-    
+
+    //创建 3D 文字，并添加到 mesArr 中，请注意此函数为异步函数
+    const mytext = await createText('chenk');
+    solidPrimitivesArr.push(mytext.textGeo);
+
     //将各个 solid 类型的图元实例转化为网格，并添加到 primitivesArr 中
     solidPrimitivesArr.forEach((item) => {
       const material = createMaterial(); //随机获得一种颜色材质
       const mesh = new Mesh(item, material);
 
       const wireframe = new WireframeGeometry(item);
-      const line = new LineSegments( wireframe );
+      const line = new LineSegments(wireframe);
 
       meshArr.push(mesh); //将网格添加到网格数组中
       lineArr.push(line); //将网格添加到网格数组中
@@ -171,55 +139,33 @@ const HelloPrimitives: FC<Props> = (props) => {
     //   meshArr.push(mesh)
     // })
 
-    //定义物体在画面中显示的网格布局
-    const eachRow = 5; //每一行显示 5 个
-    const spread = 30; //行高 和 列宽
-
-    //配置每一个图元实例，转化为网格，并位置和材质后，将其添加到场景中
     meshArr.forEach((mesh, index) => {
-      //我们设定的排列是每行显示 eachRow，即 5 个物体、行高 和 列宽 均为 spread 即 15
-      //因此每个物体根据顺序，计算出自己所在的位置
-      const row = Math.floor(index / eachRow); //计算出所在行
-      const column = index % eachRow; //计算出所在列
+      const { x, y } = getPositionByIndex(index);
+      // const Geocurrent = solidPrimitivesArr[index]
+      mesh.position.x = x; //为什么要 -2 ？
+      mesh.position.y = y;
 
-      mesh.position.x = (column - 2) * spread; //为什么要 -2 ？
-      //因为我们希望将每一行物体摆放的单元格，依次是：-2、-1、0、1、2，这样可以使每一整行物体处于居中显示
-      mesh.position.y = (2 - row) * spread;
+      lineArr[index].position.x = x;
+      lineArr[index].position.y = y;
 
-      scene.add(mesh); //将网格添加到场景中
+      // mesh.computeBoundingBox()
+      // Geocurrent.boundingBox?.getCenter(mesh.position).multiplyScalar(-1)
+      // wireframe.computeBoundingBox()
+      // wireframe.boundingBox?.getCenter(line.position).multiplyScalar(-1)
+
+      scene.add(mesh, lineArr[index]); //将网格添加到场景中
     });
-
-    lineArr.forEach((mesh, index) => {
-      //我们设定的排列是每行显示 eachRow，即 5 个物体、行高 和 列宽 均为 spread 即 15
-      //因此每个物体根据顺序，计算出自己所在的位置
-      const row = Math.floor(index / eachRow); //计算出所在行
-      const column = index % eachRow; //计算出所在列
-
-      mesh.position.x = (column - 2) * spread; //为什么要 -2 ？
-      //因为我们希望将每一行物体摆放的单元格，依次是：-2、-1、0、1、2，这样可以使每一整行物体处于居中显示
-      mesh.position.y = (2 - row) * spread;
-
-      scene.add(mesh); //将网格添加到场景中
-    });
-
-    scene.add(line); //将网格添加到场景中wireframe
-    // const material = createMaterial();
-    // const test12312 = new Mesh(wireframe, material)
-
-    // scene.add(test12312); 
 
     //添加自动旋转渲染动画
     const render = (time: number) => {
       time = time * 0.001;
-      meshArr.forEach((item) => {
+      meshArr.forEach((item, index) => {
         item.rotation.x = time;
         item.rotation.y = time;
+
+        lineArr[index].rotation.x = time;
+        lineArr[index].rotation.y = time;
       });
-      lineArr.forEach((item) => {
-        item.rotation.x = time;
-        item.rotation.y = time;
-      });
-      // controls.update();
       controls.update();
       renderer.render(scene, camera);
       window.requestAnimationFrame(render);
