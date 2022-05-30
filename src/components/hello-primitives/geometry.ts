@@ -21,7 +21,12 @@ import {
   SphereGeometry,
   WireframeGeometry,
   LineSegments,
-  CylinderGeometry
+  CylinderGeometry,
+  CatmullRomCurve3,
+  Vector3,
+  BufferGeometry,
+  LineBasicMaterial,
+  Line
 } from 'three';
 
 const myBoxwidth = 8;
@@ -204,3 +209,25 @@ export const line = new LineSegments( wireframe );
 // line.material.transparent = true;
 
 // scene.add( line );
+
+//Create a closed wavey loop
+const curve = new CatmullRomCurve3( [
+	new Vector3( -10, 0, 10 ),
+	new Vector3( -5, 5, 5 ),
+	new Vector3( 0, 0, 0 ),
+	new Vector3( 5, -5, 5 ),
+	new Vector3( 10, 0, 10 )
+] );
+
+const curvePoints = curve.getPoints( 50 );
+export const curveGeometry = new BufferGeometry().setFromPoints( curvePoints );
+
+const curveMaterial = new LineBasicMaterial({
+  color: 0xffffff,
+  linewidth: 1,
+  linecap: 'round', //ignored by WebGLRenderer
+  linejoin:  'round' //ignored by WebGLRenderer
+});
+
+// Create the final object to add to the scene
+export const curveObject = new Line( curveGeometry, curveMaterial );

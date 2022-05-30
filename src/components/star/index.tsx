@@ -12,6 +12,7 @@ import {
 } from '@/components/star/mesh';
 
 import './index.scss';
+import { AxesHelper } from 'three';
 
 const nodeArr = [solarSystem, earthOrbit, moonOribit]; //太阳、地球、月亮对应的网格
 
@@ -29,8 +30,11 @@ const HelloScene: FC = () => {
       });
       rendererRef.current = renderer;
 
+      const width = document.body.clientWidth
+      const height = document.body.clientHeight
+
       //创建镜头
-      const camera = new Three.PerspectiveCamera(40, 2, 0.1, 1000);
+      const camera = new Three.PerspectiveCamera(40, width/height, 0.1, 1000);
       camera.position.set(5, 50, 200);
       // camera.up.set(0, 0, 1);
       camera.lookAt(0, 0, 0);
@@ -38,8 +42,14 @@ const HelloScene: FC = () => {
 
       //创建场景
       const scene = new Three.Scene();
-      scene.background = new Three.Color(0x111111);
+      scene.background = new Three.Color(0x666666);
       sceneRef.current = scene;
+
+      const light = new Three.AmbientLight(0xeeeeee);
+      scene.add(light)
+
+      const axesHelper = new AxesHelper(50);
+      scene.add( axesHelper );
 
       const controls = new ArcballControls(camera, canvasRef.current, scene);
       controls.addEventListener('change', function () {

@@ -19,6 +19,7 @@ import {
   Material,
   LineDashedMaterial,
   LineBasicMaterial,
+  DirectionalLightHelper,
 } from 'three';
 import type { FC } from 'react';
 import {
@@ -40,6 +41,8 @@ import {
   Tetrahedron,
   Torus,
   line,
+  curveObject,
+  curveGeometry,
   // wireframe
 } from './geometry';
 import './index.scss';
@@ -93,17 +96,15 @@ const HelloPrimitives: FC<Props> = (props) => {
     light0.position.set(-20, 20, -20);
     scene.add(light0);
 
-    const light2 = new DirectionalLight(0xffffff, 0.4);
+    const light1 = new DirectionalLight(0xffffff, 0.4);
     light0.position.set(20, -20, 20);
-    scene.add(light2);
+    scene.add(light1);
 
-    const light3 = new DirectionalLight(0xffffff, 0.4);
-    light0.position.set(-20, -20, 20);
-    scene.add(light3);
-
-    const light4 = new DirectionalLight(0xffffff, 0.4);
-    light0.position.set(20, 20, -20);
-    scene.add(light4);
+    //根据平行光实例，创建对应的辅助对象，并将辅助对象添加到场景中
+    const directionalLightHelper0 = new DirectionalLightHelper(light0)
+    const directionalLightHelper1 = new DirectionalLightHelper(light1)
+    scene.add(directionalLightHelper0)
+    scene.add(directionalLightHelper1)
 
     //获得各个 solid 类型的图元实例，并添加到 solidPrimitivesArr 中
     const solidPrimitivesArr: BufferGeometry[] = [];
@@ -113,7 +114,7 @@ const HelloPrimitives: FC<Props> = (props) => {
 
     solidPrimitivesArr.push(Polyhedron, ring, myShape, Sphere, Tetrahedron);
 
-    solidPrimitivesArr.push(Torus);
+    solidPrimitivesArr.push(Torus, curveGeometry);
 
     //创建 3D 文字，并添加到 mesArr 中，请注意此函数为异步函数
     const mytext = await createText('chenk');
@@ -143,6 +144,7 @@ const HelloPrimitives: FC<Props> = (props) => {
     //   const mesh = new Three.LineSegments(item, material)
     //   meshArr.push(mesh)
     // })
+    // meshArr.push(curveObject)
 
     meshArr.forEach((mesh, index) => {
       const { x, y } = getPositionByIndex(index);
