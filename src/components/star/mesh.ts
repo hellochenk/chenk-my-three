@@ -14,7 +14,9 @@ import {
   SphereBufferGeometry,
   TextureLoader,
 } from 'three';
-import images from '@/assets/images/sun.jpeg'
+import sun from '@/assets/images/sun.jpeg'
+import earth from '@/assets/images/earth.jpeg'
+import moon from '@/assets/images/moon.jpeg'
 
 //创建一个球体
 const segment = 32
@@ -26,23 +28,29 @@ const Test = new MeshToonMaterial({
 })
 
 const loader = new TextureLoader()
-const imgMaterial = new MeshBasicMaterial({
-  map:loader.load(images)
+const sunMaterial = new MeshBasicMaterial({
+  map:loader.load(sun)
 })
+
+const earthMaterial = new MeshBasicMaterial({
+  map:loader.load(earth)
+})
+
+const moonMaterial = new MeshBasicMaterial({
+  map:loader.load(moon)
+})
+
 
 Test.color.set(0xff0000)
 Test.emissive.set(0x666666)
 //创建太阳
-const sunMaterial = imgMaterial;
 const sunMesh = new Mesh(sphere, sunMaterial);
 sunMesh.scale.set(4, 4, 4); //将球体尺寸放大 4 倍
 
 //创建地球
-const earthMaterial = imgMaterial;
 const earthMesh = new Mesh(sphere, earthMaterial);
 
 //创建月球
-const moonMaterial = imgMaterial;
 const moonMesh = new Mesh(sphere, moonMaterial);
 moonMesh.scale.set(0.5, 0.5, 0.5); //将球体尺寸缩小 0.5 倍
 

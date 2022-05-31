@@ -5,6 +5,7 @@ import HelloThreejsPrime from '@/components/hello-primitives';
 import Star from '@/components/star';
 import Texture from '@/components/texture';
 import Light from '@/components/light';
+import Camera from '@/components/camera';
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
       <Route path="star" element={<Star />} />
       <Route path="texture" element={<Texture />} />
       <Route path="light" element={<Light />} />
+      <Route path="camera" element={<Camera />} />
       <Route path="/" element={<HelloThreejsPrime />} />
     </Routes>
   )

@@ -61,6 +61,7 @@ const Index: FC = (props) => {
     const render = () => {
       if (sceneRef.current) {
         renderer.render(sceneRef.current, camera);
+        controls.update();
       }
       window.requestAnimationFrame(render);
     };

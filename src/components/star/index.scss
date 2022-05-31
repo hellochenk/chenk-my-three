@@ -3,3 +3,22 @@
   width: inherit;
   height: inherit;
 }
+.container {
+  @extend .full-screen;
+}
+.mainScene {
+  position: absolute;
+  @extend .full-screen;
+}
+.helperScene {
+  position: absolute;
+  right: 0;
+  top: 0;
+  border: 1px solid #eee;
+  width: 200px;
+  height: 150px;
+}
+.draw {
+  position: absolute;
+  @extend .full-screen;
+}
