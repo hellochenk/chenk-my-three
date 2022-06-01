@@ -40,6 +40,7 @@ const HelloScene: FC = () => {
       const renderer = new Three.WebGLRenderer({
         canvas: canvasRef.current as HTMLCanvasElement,
       });
+      renderer.physicallyCorrectLights = true;
       renderer.setScissorTest(true);
       rendererRef.current = renderer;
 
@@ -138,7 +139,7 @@ const HelloScene: FC = () => {
 
         const sceneBackground = sceneRef.current.background as Three.Color;
 
-        time = time * 0.001;
+        time = time * 0.002;
         nodeArr.forEach((item) => {
           item.rotation.y = time;
         });

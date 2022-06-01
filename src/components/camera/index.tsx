@@ -46,12 +46,16 @@ const HelloCamera = () => {
     scene.add(light);
     scene.add(light.target);
 
-    const leftCamera = new Three.PerspectiveCamera(45, 2, 5, 100);
-    leftCamera.position.set(0, 10, 20);
-    leftCamera.lookAt(0, 5, 0);
+    // const leftCamera = new Three.PerspectiveCamera(45, 2, 5, 100);
+    // leftCamera.position.set(0, 10, 20);
+    // leftCamera.lookAt(0, 5, 0);
+    const leftCamera = new Three.OrthographicCamera(-1, 1, 1, -1, 5, 50)
+    leftCamera.zoom = 0.2
+    leftCamera.position.set(0, 10, 20)
 
     const helper = new Three.CameraHelper(leftCamera);
     scene.add(helper);
+
 
     const leftControls = new OrbitControls(leftCamera, leftViewRef.current);
     leftControls.target.set(0, 5, 0);
@@ -64,7 +68,9 @@ const HelloCamera = () => {
     const rightControls = new OrbitControls(rightCamera, rightViewRef.current);
     rightControls.target.set(0, 5, 0);
     rightControls.update();
+    // const canvasRect111 = canvasRef.current.getBoundingClientRect();
 
+    // console.log('canvasRect111', canvasRect111)
     const setScissorForElement = (div: HTMLDivElement) => {
       // 渲染节点
       if (canvasRef.current === null) {
@@ -110,7 +116,9 @@ const HelloCamera = () => {
         leftViewRef.current as HTMLDivElement
       );
 
-      leftCamera.aspect = leftAspect as number;
+      // leftCamera.aspect = leftAspect as number;
+      leftCamera.left = - (leftAspect as number)
+      leftCamera.right = leftAspect as number
       leftCamera.updateProjectionMatrix();
 
       helper.update();
