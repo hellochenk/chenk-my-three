@@ -42,35 +42,37 @@ const HelloShadow: FC = () => {
     camera.position.set(0, 10, 20);
     camera.lookAt(0, 0, 0);
 
-    const helperCamera = new Three.PerspectiveCamera(45, 2, 5, 100)
-    helperCamera.position.set(20, 10, 20)
-    helperCamera.lookAt(0, 5, 0)
-    scene.add(helperCamera)
+    const helperCamera = new Three.PerspectiveCamera(45, 2, 5, 100);
+    helperCamera.position.set(20, 10, 20);
+    helperCamera.lookAt(0, 5, 0);
+    scene.add(helperCamera);
 
-    const cameraHelper = new Three.CameraHelper(helperCamera)
-    scene.add(cameraHelper)
+    const cameraHelper = new Three.CameraHelper(helperCamera);
+    scene.add(cameraHelper);
 
-    const controls = new OrbitControls(camera, canvasRef.current)
-    controls.target.set(0, 5, 0)
-    controls.update()
+    const controls = new OrbitControls(camera, canvasRef.current);
+    controls.target.set(0, 5, 0);
+    controls.update();
 
     // 半球灯 光源直接放置于场景之上，光照颜色从天空光线颜色渐变到地面光线颜色。
     // const hemisphereLight = new Three.HemisphereLight(0xffffff, 0x666666, 2);
     // scene.add(hemisphereLight);
-    const light = new Three.SpotLight(0xFFFFFF, 1)
+    // const light = new Three.SpotLight(0xFFFFFF, 1)
+    const light = new Three.PointLight(0xffffff, 1);
     // 平行灯
     // const light = new Three.DirectionalLight(0xffffff, 1);
     // 开启投影
     light.castShadow = true;
     light.position.set(0, 10, 0);
-    light.target.position.set(-4, 0, -4);
+    // light.target.position.set(-4, 0, -4);
     scene.add(light);
-    scene.add(light.target);
+    // scene.add(light.target);
 
     // const lightHelper = new Three.DirectionalLightHelper(
     //   light
     // );
-    const lightHelper = new Three.SpotLightHelper(light)
+    // const lightHelper = new Three.SpotLightHelper(light)
+    const lightHelper = new Three.PointLightHelper(light);
     scene.add(lightHelper);
 
     const shadowCamera = light.shadow.camera;
@@ -105,8 +107,19 @@ const HelloShadow: FC = () => {
     scene.add(planeMesh);
 
     const commonMaterial = new Three.MeshPhongMaterial({
-      color: 0x88AACC
-    })
+      color: 0x88aacc,
+    });
+
+    //新增 room 立方体
+    const roomMat = new Three.MeshPhongMaterial({
+      color: 0xcccccc,
+      side: Three.BackSide, //注意此处的设置
+    });
+    const roomGeo = new Three.BoxBufferGeometry(30, 30, 30);
+    const roomMesh = new Three.Mesh(roomGeo, roomMat);
+    roomMesh.receiveShadow = true; //作为背景墙面，只需接收阴影，无需设置 投射阴影(castShadow)
+    roomMesh.position.set(0, 15.1, 0); //这个 y 值 14.9 是有玄机的，稍后解释
+    scene.add(roomMesh);
 
     // 球体
     const sphereRadius = 1;
@@ -115,7 +128,7 @@ const HelloShadow: FC = () => {
     const sphereMesh = new Three.Mesh(sphereGeo, commonMaterial);
     sphereMesh.castShadow = true;
     sphereMesh.receiveShadow = true;
-    sphereMesh.position.set(-4, 5, 0)
+    sphereMesh.position.set(-4, 5, 0);
     scene.add(sphereMesh);
 
     const axesHelper = new Three.AxesHelper(15);
@@ -131,7 +144,7 @@ const HelloShadow: FC = () => {
     const boxMesh = new Three.Mesh(myBoxGeo, commonMaterial);
     boxMesh.castShadow = true;
     boxMesh.receiveShadow = true;
-    boxMesh.position.set(5, 3, 0)
+    boxMesh.position.set(5, 3, 0);
     scene.add(boxMesh);
 
     const render = (time: number) => {
