@@ -42,7 +42,7 @@ const HelloFakeShadow = () => {
     scene.add(directionalLight);
     scene.add(directionalLight.target);
 
-    // 设置场景
+    // 设置地块材质
     const planeSize = 40;
     const loader = new Three.TextureLoader();
     const texture = loader.load(require('@/assets/images/checker.png'));
@@ -72,7 +72,7 @@ const HelloFakeShadow = () => {
     const shadowSegment = 3;
     const shadowGeo = new Three.PlaneBufferGeometry(shadowSize, shadowSize, shadowSegment, shadowSegment); //假阴影对应的平面几何体
 
-    const numSphere = 5; //将随机创建 15 个球体
+    const numSphere = 25; //将随机创建 15 个球体
     for (let i = 0; i < numSphere; i++) {
       const base = new Three.Object3D(); //创建 球和阴影 的整体对象
       scene.add(base);
@@ -82,7 +82,7 @@ const HelloFakeShadow = () => {
         map: shadowTexture,
         transparent: true,
         depthWrite: false,
-        // wireframe: true
+        wireframe: true
       });
       // 球体的4倍
       const shadowSize = sphereRadius * 4;
@@ -92,11 +92,12 @@ const HelloFakeShadow = () => {
       // 旋转使贴图朝上
       shadowMesh.rotation.x = Math.PI * -0.5;
       shadowMesh.scale.set(shadowSize, shadowSize, shadowSize);
+      // 分组
       base.add(shadowMesh);
 
       // 球体材质
       const sphereMat = new Three.MeshPhongMaterial({
-        wireframe: false,
+        wireframe: true,
       });
       sphereMat.color.setHSL(i / numSphere, 1, 0.75); //给 球 设置不同颜色
       const sphereMesh = new Three.Mesh(sphereGeo, sphereMat);
@@ -126,22 +127,29 @@ const HelloFakeShadow = () => {
 
         const u = index / basesArray.length;
         const speed = time * 0.2;
+        // 偏转角
         const angle = speed + u * Math.PI * 3 * (index % 1 ? 1 : -1);
-        const radius = Math.sin(speed - index) * 30;
-
+        // 半径
+        const radius = Math.sin(speed - index) * 20;
+        
+        // mesh 组整体修改x，y轴位置 
         base.position.set(
           Math.cos(angle) * radius,
           0,
           Math.sin(angle) * radius
         );
-        const yOff = Math.abs(Math.sin(time * 2 + index));
-        sphereMesh.position.y = y + Three.MathUtils.lerp(-2, 2, yOff);
-
+        const yOff = Math.abs(Math.sin(time * 4 + index));
+        // 修改球体y轴 调整高度 
+        // 返回参数 value 在起点 x 与终点 y 的闭区间 [0,1] 中的百分比。
+        sphereMesh.position.y = y + Three.MathUtils.lerp(-2, 4, yOff);
+        // mesh 组整体旋转
         base.rotation.y = time;
 
+        // 阴影透明度变化
+        // 返回参数 value 在起点 x 与终点 y 的闭区间 [0,1] 中的百分比。
         (shadowMesh.material as Three.Material).opacity = Three.MathUtils.lerp(
           1,
-          0.25,
+          0,
           yOff
         );
       });

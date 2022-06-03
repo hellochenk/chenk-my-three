@@ -7,6 +7,7 @@ import Texture from '@/components/texture';
 import Light from '@/components/light';
 import Camera from '@/components/camera';
 import FakeShadow from '@/components/hello-fake-shadow';
+import HelloShadow from '@/components/hello-shadow';
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
       <Route path="light" element={<Light />} />
       <Route path="camera" element={<Camera />} />
       <Route path="fake" element={<FakeShadow />} />
+      <Route path="shadow" element={<HelloShadow />} />
       <Route path="/" element={<HelloThreejsPrime />} />
     </Routes>
   )
