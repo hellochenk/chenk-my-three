@@ -10,6 +10,7 @@ import FakeShadow from '@/components/hello-fake-shadow';
 import HelloShadow from '@/components/hello-shadow';
 import RoomShadow from '@/components/hello-shadow/hello-point-light-shadow';
 import MyFog from '@/components/hello-fog';
+import MyTest from '@/components/test';
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
       <Route path="shadow" element={<HelloShadow />} />
       <Route path="shadow2" element={<RoomShadow />} />
       <Route path="fog" element={<MyFog />} />
+      <Route path="test" element={<MyTest />} />
       <Route path="/" element={<HelloThreejsPrime />} />
     </Routes>
   )

@@ -48,6 +48,8 @@ const HelloThreejs: React.FC = () => {
         boxs.push(mesh);
       });
 
+      // boxs.length > 0 && (boxs[1].material as Three.Material).fog = false
+
       //添加自动旋转渲染动画
       const render = (time: number) => {
         time = time * 0.001; //原本 time 为毫秒，我们这里对 time 进行转化，修改成 秒，以便于我们动画旋转角度的递增
