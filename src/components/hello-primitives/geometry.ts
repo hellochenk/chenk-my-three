@@ -21,7 +21,7 @@ import {
   SphereGeometry,
   WireframeGeometry,
   LineSegments,
-  CylinderGeometry,
+  // CylinderGeometry,
   CatmullRomCurve3,
   Vector3,
   BufferGeometry,

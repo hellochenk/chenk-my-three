@@ -8,7 +8,6 @@ import {
   earthOrbit,
   moonOribit,
   pointLight,
-  light,
 } from '@/components/star/mesh';
 
 import './index.scss';

@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useMemo } from 'react';
 import type { FC } from 'react';
 import * as Three from 'three';
 import { ArcballControls } from 'three/examples/jsm/controls/ArcballControls.js';
@@ -14,11 +14,11 @@ import './index.scss';
 
 const HelloTexture: FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const rendererRef = useRef<Three.WebGLRenderer | null>(null);
-  const cameraRef = useRef<Three.PerspectiveCamera | null>(null);
-  const sceneRef = useRef<Three.Scene | null>(null);
+  // const rendererRef = useRef<Three.WebGLRenderer | null>(null);
+  // const cameraRef = useRef<Three.PerspectiveCamera | null>(null);
+  // const sceneRef = useRef<Three.Scene | null>(null);
 
-  const images = [sun, duck1, duck2, duck3, duck4, duck5];
+  const images = useMemo(() => [sun, duck1, duck2, duck3, duck4, duck5], []);
 
   useEffect(() => {
     if (canvasRef.current === null) {
@@ -125,7 +125,7 @@ const HelloTexture: FC = () => {
     return () => {
       window.removeEventListener('resize', resizeHandle);
     };
-  }, [canvasRef]);
+  }, [canvasRef, images]);
 
   return <canvas ref={canvasRef} className='full-screen' />;
 };

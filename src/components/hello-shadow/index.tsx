@@ -3,16 +3,16 @@ import { useRef, useEffect } from 'react';
 import * as Three from 'three';
 
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { ArcballControls } from 'three/examples/jsm/controls/ArcballControls';
+// import { ArcballControls } from 'three/examples/jsm/controls/ArcballControls';
 
 import './index.scss';
 
-interface SphereShadowBase {
-  base: Three.Object3D;
-  sphereMesh: Three.Mesh;
-  shadowMesh: Three.Mesh;
-  y: number;
-}
+// interface SphereShadowBase {
+//   base: Three.Object3D;
+//   sphereMesh: Three.Mesh;
+//   shadowMesh: Three.Mesh;
+//   y: number;
+// }
 /**
  * 开启自然投影
  * renderer开启shadowMap

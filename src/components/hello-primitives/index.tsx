@@ -1,4 +1,9 @@
-import { useRef, useState, useEffect, useCallback } from 'react';
+import { 
+  useRef, 
+  // useState, 
+  useEffect, 
+  useCallback 
+} from 'react';
 // import { useRef, useEffect, useCallback } from 'react'
 import { ArcballControls } from 'three/examples/jsm/controls/ArcballControls.js';
 import {
@@ -6,19 +11,19 @@ import {
   LineSegments,
   WebGLRenderer,
   PerspectiveCamera,
-  MeshPhongMaterial,
-  DoubleSide,
+  // MeshPhongMaterial,
+  // DoubleSide,
   Scene,
   Color,
   AxesHelper,
-  Vector3,
-  TOUCH,
+  // Vector3,
+  // TOUCH,
   DirectionalLight,
   BufferGeometry,
   WireframeGeometry,
   Material,
-  LineDashedMaterial,
-  LineBasicMaterial,
+  // LineDashedMaterial,
+  // LineBasicMaterial,
   DirectionalLightHelper,
 } from 'three';
 import type { FC } from 'react';
@@ -28,7 +33,7 @@ import {
   cone,
   Cylinder,
   Dodecahedron,
-  geometry2,
+  // geometry2,
   Extrude,
   Icosahedron,
   Lathe,
@@ -40,8 +45,8 @@ import {
   Sphere,
   Tetrahedron,
   Torus,
-  line,
-  curveObject,
+  // line,
+  // curveObject,
   curveGeometry,
   // wireframe
 } from './geometry';
@@ -101,10 +106,10 @@ const HelloPrimitives: FC<Props> = (props) => {
     scene.add(light1);
 
     //根据平行光实例，创建对应的辅助对象，并将辅助对象添加到场景中
-    const directionalLightHelper0 = new DirectionalLightHelper(light0)
-    const directionalLightHelper1 = new DirectionalLightHelper(light1)
-    scene.add(directionalLightHelper0)
-    scene.add(directionalLightHelper1)
+    const directionalLightHelper0 = new DirectionalLightHelper(light0);
+    const directionalLightHelper1 = new DirectionalLightHelper(light1);
+    scene.add(directionalLightHelper0);
+    scene.add(directionalLightHelper1);
 
     //获得各个 solid 类型的图元实例，并添加到 solidPrimitivesArr 中
     const solidPrimitivesArr: BufferGeometry[] = [];
@@ -128,7 +133,6 @@ const HelloPrimitives: FC<Props> = (props) => {
       const wireframe = new WireframeGeometry(item);
       const line = new LineSegments(wireframe);
       // const lineMesh = new Mesh(wireframe, new LineBasicMaterial())
-      
 
       meshArr.push(mesh); //将网格添加到网格数组中
       lineArr.push(line); //将网格添加到网格数组中
@@ -164,12 +168,12 @@ const HelloPrimitives: FC<Props> = (props) => {
     });
 
     meshArr.forEach((item) => {
-      const axes = new AxesHelper(15)
-      const material = axes.material as Material
-      material.depthTest = false
-      axes.renderOrder = 1 // renderOrder 的该值默认为 0，这里设置为 1 ，目的是为了提高优先级，避免被物体本身给遮盖住
-      item.add(axes)
-    })
+      const axes = new AxesHelper(15);
+      const material = axes.material as Material;
+      material.depthTest = false;
+      axes.renderOrder = 1; // renderOrder 的该值默认为 0，这里设置为 1 ，目的是为了提高优先级，避免被物体本身给遮盖住
+      item.add(axes);
+    });
     //添加自动旋转渲染动画
     const render = (time: number) => {
       time = time * 0.001;

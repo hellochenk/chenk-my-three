@@ -53,7 +53,7 @@ const HelloThreejs: React.FC = () => {
       //添加自动旋转渲染动画
       const render = (time: number) => {
         time = time * 0.001; //原本 time 为毫秒，我们这里对 time 进行转化，修改成 秒，以便于我们动画旋转角度的递增
-        boxs.map((cube) => {
+        boxs.forEach((cube) => {
           cube.rotation.x = time;
           cube.rotation.y = time;
           cube.rotation.z = time;

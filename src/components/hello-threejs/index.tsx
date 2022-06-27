@@ -78,7 +78,7 @@ const HelloThreejs: React.FC = () => {
         // camera.updateProjectionMatrix(); //通知镜头更新视椎(视野)
         // renderer.setSize(canvas.clientWidth, canvas.clientHeight, false)
 
-        cubes.map((cube) => {
+        cubes.forEach((cube) => {
           cube.rotation.x = time;
           cube.rotation.y = time;
         });

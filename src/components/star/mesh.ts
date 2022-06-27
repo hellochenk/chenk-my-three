@@ -1,13 +1,13 @@
 import {
   DirectionalLight,
-  LineBasicMaterial,
-  LineDashedMaterial,
+  // LineBasicMaterial,
+  // LineDashedMaterial,
   Mesh,
   MeshBasicMaterial,
-  MeshLambertMaterial,
-  MeshMatcapMaterial,
-  MeshNormalMaterial,
-  MeshPhongMaterial,
+  // MeshLambertMaterial,
+  // MeshMatcapMaterial,
+  // MeshNormalMaterial,
+  // MeshPhongMaterial,
   MeshToonMaterial,
   Object3D,
   PointLight,
@@ -77,4 +77,6 @@ export const pointLight = new PointLight(0xffffff, 3);
 export const light = new DirectionalLight(0xffffff, 0.4);
 light.position.set(0, 0, 0);
 
-export default {};
+
+const mytest = {}
+export default mytest;
