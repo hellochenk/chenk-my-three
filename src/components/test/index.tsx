@@ -5,9 +5,10 @@ import type { FC } from 'react';
 
 type Props = {};
 type CountdownPropsType = {
-  stampTimer: number;
+  stamp: number;
 };
-// todo 跟随系统跳秒
+// 跟随系统跳秒 ok,
+// 自动纠偏 ok
 const useCountdown = (props?: CountdownPropsType) => {
   const [stamp, setStamp] = useState<number>(0);
   const ONE_SECEND = useRef<number>(1000);
@@ -33,25 +34,26 @@ const useCountdown = (props?: CountdownPropsType) => {
 
   const counting = useCallback(() => {
     if (startCountdownStampRef.current && totalStampRef.current) {
-      const fixPrefix = ONE_SECEND.current - prefixRef.current
+      const fixPrefix = ONE_SECEND.current - prefixRef.current;
       indexRef.current += 1;
+
       const now = new Date().getTime();
-      // 当前距离开始的间隔
       const durations = now - startCountdownStampRef.current;
-      // 理论上递归后的执行间隔
       const wishDurations = indexRef.current * ONE_SECEND.current - fixPrefix;
 
       const diffdurations = durations - wishDurations;
-      // @TODO 添加纠偏后的prefix
       if (
         diffdurations > ONE_SECEND.current ||
         diffdurations < -ONE_SECEND.current
       ) {
-        console.log('fix')
         indexRef.current = durations / ONE_SECEND.current;
       }
 
-      const diff = now - (startCountdownStampRef.current + indexRef.current * ONE_SECEND.current - fixPrefix);
+      const diff =
+        now -
+        (startCountdownStampRef.current +
+          indexRef.current * ONE_SECEND.current -
+          fixPrefix);
       const nextTask = ONE_SECEND.current - diff;
       const newStamp = totalStampRef.current - durations;
 
@@ -84,11 +86,11 @@ const useCountdown = (props?: CountdownPropsType) => {
   };
 
   useEffect(() => {
-    if (!prevTotalStampRef.current && props && props.stampTimer > 0) {
-      prevTotalStampRef.current = props.stampTimer;
-      checkPropsStampAndStartTask(props.stampTimer)
+    if (!prevTotalStampRef.current && props && props.stamp > 0) {
+      prevTotalStampRef.current = props.stamp;
+      checkPropsStampAndStartTask(props.stamp);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checkPropsStampAndStartTask]);
 
   return {
@@ -117,7 +119,7 @@ const formatDuring = (stamp: number) => {
 const min10 = 5 * 60000;
 const Index: FC<Props> = (props) => {
   const countDown = useCountdown({
-    stampTimer: min10
+    stamp: min10,
   });
 
   // useEffect(() => {
