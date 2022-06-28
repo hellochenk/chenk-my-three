@@ -12,6 +12,7 @@ import RoomShadow from '@/components/hello-shadow/hello-point-light-shadow';
 import MyFog from '@/components/hello-fog';
 import MyTest from '@/components/test';
 import MyTarget from '@/components/hello-render-target';
+import MyDemand from '@/components/rendering-on-demand';
 
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
       <Route path="fog" element={<MyFog />} />
       <Route path="test" element={<MyTest />} />
       <Route path="target" element={<MyTarget />} />
+      <Route path="demand" element={<MyDemand />} />
       <Route path="/" element={<HelloThreejsPrime />} />
     </Routes>
   )

@@ -1,133 +1,154 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import type { FC } from 'react';
 
-// const styles = require('./index.css');
+import * as Three from 'three';
+
+import mesh from '@/assets/images/mesh.png';
+
+import './index.scss';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 type Props = {};
-type CountdownPropsType = {
-  stamp: number;
-};
-// 跟随系统跳秒 ok,
-// 自动纠偏 ok
-const useCountdown = (props?: CountdownPropsType) => {
-  const [stamp, setStamp] = useState<number>(0);
-  const ONE_SECEND = useRef<number>(1000);
 
-  // 依赖 index次数计时器将其改为每1s执行的自纠正倒计时
-  const indexRef = useRef<number>(0);
+// const min10 = 5 * 60000;
+const Index: FC<Props> = (props) => {
+  const myRef = useRef<HTMLCanvasElement | null>(null);
 
-  // 初始化props。stamp时和update时才需要设置这个prev
-  const prevTotalStampRef = useRef<number | null>(0);
-  // 变化中的stamp
-  const totalStampRef = useRef<number | null>(0);
-
-  // 调度真正开始执行时间
-  const startCountdownStampRef = useRef<number | null>(null);
-
-  // prefix 跟随系统跳秒
-  const prefixRef = useRef<number>(1000);
-
-  const beforeStarterAndInitValue = (timer: number) => {
-    totalStampRef.current = timer;
-    startCountdownStampRef.current = new Date().getTime();
+  const device = {
+    width: document.body.clientWidth,
+    height: document.body.clientHeight,
   };
 
-  const counting = useCallback(() => {
-    if (startCountdownStampRef.current && totalStampRef.current) {
-      const fixPrefix = ONE_SECEND.current - prefixRef.current;
-      indexRef.current += 1;
+  const renderCanvas = useCallback(() => {
+    console.log('render...');
 
-      const now = new Date().getTime();
-      const durations = now - startCountdownStampRef.current;
-      const wishDurations = indexRef.current * ONE_SECEND.current - fixPrefix;
+    if (myRef.current instanceof HTMLCanvasElement) {
+      const scene = new Three.Scene();
+      scene.background = new Three.Color(0xe1e1e1);
 
-      const diffdurations = durations - wishDurations;
-      if (
-        diffdurations > ONE_SECEND.current ||
-        diffdurations < -ONE_SECEND.current
-      ) {
-        indexRef.current = durations / ONE_SECEND.current;
-      }
+      const renderer = new Three.WebGLRenderer({
+        canvas: myRef.current,
+      });
+      renderer.setSize(device.width, device.height);
 
-      const diff =
-        now -
-        (startCountdownStampRef.current +
-          indexRef.current * ONE_SECEND.current -
-          fixPrefix);
-      const nextTask = ONE_SECEND.current - diff;
-      const newStamp = totalStampRef.current - durations;
+      const planeSize = 40;
+      const PlaneShape = new Three.PlaneGeometry(planeSize, planeSize);
 
-      setStamp(() => newStamp);
-      if (newStamp > 0) {
-        setTimeout(() => {
-          counting();
-        }, nextTask);
-      }
+      const manager = new Three.LoadingManager();
+      manager.onStart = function (url, itemsLoaded, itemsTotal) {
+        console.log(
+          'Started loading file: ' +
+            url +
+            '.\nLoaded ' +
+            itemsLoaded +
+            ' of ' +
+            itemsTotal +
+            ' files.'
+        );
+      };
+
+      manager.onLoad = function () {
+        console.log('Loading complete!');
+      };
+
+      manager.onProgress = function (url, itemsLoaded, itemsTotal) {
+        console.log(
+          'Loading file: ' +
+            url +
+            '.\nLoaded ' +
+            itemsLoaded +
+            ' of ' +
+            itemsTotal +
+            ' files.'
+        );
+      };
+
+      manager.onError = function (url) {
+        console.log('There was an error loading ' + url);
+      };
+      const loader = new Three.TextureLoader(manager);
+      const texture = loader.load(mesh);
+      texture.wrapS = Three.RepeatWrapping;
+      texture.wrapT = Three.RepeatWrapping;
+      texture.repeat.set(planeSize / 2, planeSize / 2);
+      texture.magFilter = Three.NearestFilter;
+      const material = new Three.MeshBasicMaterial({
+        map: texture,
+        side: Three.DoubleSide,
+      });
+      const plane = new Three.Mesh(PlaneShape, material);
+      plane.rotation.x = Math.PI * -0.5;
+      plane.position.x = -0.5;
+      scene.add(plane);
+
+      const camera = new Three.PerspectiveCamera(
+        75,
+        device.width / device.height,
+        0.1,
+        1000
+      );
+      camera.position.set(10, 10, 10);
+      camera.lookAt(0, 0, 0);
+      scene.add(camera);
+
+      const axesHelper = new Three.AxesHelper(15);
+      scene.add(axesHelper);
+
+      const light = new Three.AmbientLight(0x404040); // soft white light
+      scene.add(light);
+
+      const directionalLight = new Three.DirectionalLight(0xffffff, 0.5);
+      directionalLight.position.set(0, 10, 0);
+      scene.add(directionalLight);
+      const helper = new Three.DirectionalLightHelper(directionalLight, 3);
+      scene.add(helper);
+
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.update();
+      // mesh
+      const boxShape = new Three.BoxGeometry(3, 3, 3);
+      // const boxMateril = new Three.MeshBasicMaterial({ color: 0x00ff00 });
+      // const boxMateril = new Three.MeshPhongMaterial({
+      //   color: 0x999999,
+      // });
+      const material1 = new Three.MeshPhongMaterial({ color: 0x44aa88 });
+      const material2 = new Three.MeshPhongMaterial({ color: 0xc50d0d });
+      const material3 = new Three.MeshPhongMaterial({ color: 0x39b20a });
+
+      const meshArr: Three.Mesh[] = [material1, material2, material3].map(
+        (material, index) => {
+          const mesh = new Three.Mesh(boxShape, material);
+          mesh.position.x = index * 5;
+          mesh.position.y = 3;
+          scene.add(mesh);
+          return mesh;
+        }
+      );
+
+      const renderBox = (timer: number) => {
+        timer *= 0.01;
+
+        meshArr.forEach((boxMesh) => {
+          boxMesh.rotation.set(timer * 0.1, timer * 0.1, timer * 0.1);
+        });
+        renderer.render(scene, camera);
+        controls.update();
+
+        requestAnimationFrame(renderBox);
+      };
+      requestAnimationFrame(renderBox);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const checkPropsStampAndStartTask = useCallback((timer?: number) => {
-    if (timer) {
-      beforeStarterAndInitValue(timer);
-      setStamp(timer || 0);
-      prefixRef.current = ONE_SECEND.current - (new Date().getTime() % 1000);
-      setTimeout(counting, prefixRef.current);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const updateStamp = (timer: number) => {
-    if (typeof timer !== 'number') {
-      throw new Error('need post number');
-    }
-    prevTotalStampRef.current = timer;
-    checkPropsStampAndStartTask(timer);
-  };
+  }, [device.height, device.width]);
 
   useEffect(() => {
-    if (!prevTotalStampRef.current && props && props.stamp > 0) {
-      prevTotalStampRef.current = props.stamp;
-      checkPropsStampAndStartTask(props.stamp);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [checkPropsStampAndStartTask]);
+    renderCanvas();
+  }, [renderCanvas]);
 
-  return {
-    stamp,
-    updateStamp,
-  };
-};
-
-const formatDuring = (stamp: number) => {
-  if (stamp <= 0) {
-    return '00:00:00';
-  }
-  // var days = parseInt(stamp / (1000 * 60 * 60 * 24));
-  const hour = parseInt(
-    `${(stamp % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)}`,
-    10
+  return (
+    <div className='test'>
+      <canvas ref={myRef} id='canvas' />
+    </div>
   );
-  const minute = parseInt(`${(stamp % (1000 * 60 * 60)) / (1000 * 60)}`, 10);
-  const second = Math.floor((stamp % (1000 * 60)) / 1000);
-
-  return `${hour < 10 ? `0${hour}` : hour}:${
-    minute < 10 ? `0${minute}` : minute
-  }:${second < 10 ? `0${second}` : second}`;
-};
-
-const min10 = 5 * 60000;
-const Index: FC<Props> = (props) => {
-  const countDown = useCountdown({
-    stamp: min10,
-  });
-
-  // useEffect(() => {
-  //   countDown.updateStamp(min10);
-  //   console.log('page loading!');
-  // }, []);
-
-  return <div>new components {formatDuring(countDown.stamp)}</div>;
 };
 
 export default Index;
