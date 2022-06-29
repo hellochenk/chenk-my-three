@@ -213,7 +213,9 @@ const HelloPrimitives: FC<Props> = (props) => {
     };
   }, [canvasRef, createInit]);
 
-  return <canvas ref={canvasRef} className='full-screen' />;
+  return (<div className='full-screen'>
+    <canvas ref={canvasRef} />
+  </div>)
 };
 
 export default HelloPrimitives;

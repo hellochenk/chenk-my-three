@@ -29,6 +29,7 @@ const Index: FC<Props> = (props) => {
       const renderer = new Three.WebGLRenderer({
         canvas: myRef.current,
       });
+      renderer.shadowMap.enabled = true;
       renderer.setSize(device.width, device.height);
 
       const planeSize = 40;
@@ -72,11 +73,12 @@ const Index: FC<Props> = (props) => {
       texture.wrapT = Three.RepeatWrapping;
       texture.repeat.set(planeSize / 2, planeSize / 2);
       texture.magFilter = Three.NearestFilter;
-      const material = new Three.MeshBasicMaterial({
+      const material = new Three.MeshPhongMaterial({
         map: texture,
         side: Three.DoubleSide,
       });
       const plane = new Three.Mesh(PlaneShape, material);
+      plane.receiveShadow = true;
       plane.rotation.x = Math.PI * -0.5;
       plane.position.x = -0.5;
       scene.add(plane);
@@ -85,7 +87,7 @@ const Index: FC<Props> = (props) => {
         75,
         device.width / device.height,
         0.1,
-        1000
+        500
       );
       camera.position.set(10, 10, 10);
       camera.lookAt(0, 0, 0);
@@ -97,11 +99,25 @@ const Index: FC<Props> = (props) => {
       const light = new Three.AmbientLight(0x404040); // soft white light
       scene.add(light);
 
-      const directionalLight = new Three.DirectionalLight(0xffffff, 0.5);
-      directionalLight.position.set(0, 10, 0);
-      scene.add(directionalLight);
-      const helper = new Three.DirectionalLightHelper(directionalLight, 3);
-      scene.add(helper);
+      const light2 = new Three.SpotLight(0xffffff, 1);
+      light2.castShadow = true;
+      light2.position.set(10, 10, 10);
+      light2.target.position.set(-4, 0, -4);
+      scene.add(light2);
+      scene.add(light2.target);
+
+      const lightHelper = new Three.SpotLightHelper(light2)
+      scene.add(lightHelper);
+
+      const shadowCamera = light2.shadow.camera;
+      // shadowCamera.left = -10;
+      // shadowCamera.right = 10;
+      // shadowCamera.top = 10;
+      // shadowCamera.bottom = -10;
+      shadowCamera.updateProjectionMatrix();
+      const shadowHelper = new Three.CameraHelper(shadowCamera);
+      scene.add(shadowHelper);
+
 
       const controls = new OrbitControls(camera, renderer.domElement);
       controls.update();
@@ -118,6 +134,8 @@ const Index: FC<Props> = (props) => {
       const meshArr: Three.Mesh[] = [material1, material2, material3].map(
         (material, index) => {
           const mesh = new Three.Mesh(boxShape, material);
+          mesh.receiveShadow = true
+          mesh.castShadow = true
           mesh.position.x = index * 5;
           mesh.position.y = 3;
           scene.add(mesh);
