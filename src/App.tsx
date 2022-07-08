@@ -25,10 +25,16 @@ const MyTest = React.lazy(() => import('@/components/test'));
 const MyTarget = React.lazy(() => import('@/components/hello-render-target'));
 const MyDemand = React.lazy(() => import('@/components/rendering-on-demand'));
 const MyHelloCanvas = React.lazy(() => import('@/components/hello-canvas/index'));
+const Preserve = React.lazy(() => import('@/components/Preserve-Drawing-Buffer/index'));
+const MyBubble = React.lazy(() => import('@/components/bubble/index'));
+const HelloEarth = React.lazy(() => import('@/components/hello-earth/index'));
+
+const HelloOffScene = React.lazy(() => import('@/components/hello-offscreen-canvas/index'));
+
+
 
 const App: FC = () => {
   const renderMenu = () => {
-    console.log('path', pathENUM)
     let arr = []
     for (let k in pathENUM) {
       arr.push(<div className={styles.link} key={k}><Link to={k}>{k}</Link></div>)
@@ -57,7 +63,11 @@ const App: FC = () => {
             <Route path={pathENUM.target} element={<MyTarget />} />
             <Route path={pathENUM.demand} element={<MyDemand />} />
             <Route path={pathENUM.HelloCanvas} element={<MyHelloCanvas />} />
-            
+            <Route path={pathENUM.Preserve} element={<Preserve />} />
+            <Route path={pathENUM.bubble} element={<MyBubble />} />
+            <Route path={pathENUM.earth} element={<HelloEarth />} />
+            <Route path={pathENUM.offscene} element={<HelloOffScene />} />
+
             <Route path='/' element={<HelloThreejsPrime />} />
           </Routes>
         </React.Suspense>

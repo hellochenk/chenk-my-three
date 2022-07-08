@@ -12,4 +12,8 @@ export enum pathENUM {
   target = 'target',
   demand = 'demand',
   HelloCanvas = 'HelloCanvas',
+  Preserve = 'Preserve',
+  bubble = 'bubble',
+  earth = 'earth',
+  offscene = 'offscene'
 };

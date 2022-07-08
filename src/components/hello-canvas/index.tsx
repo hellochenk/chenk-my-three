@@ -23,13 +23,14 @@ const Index: FC = () => {
       if(canvasRef.current && renderRef.current) {
         renderRef.current()
         // const imgurl = canvasRef.current.toDataURL('image/png')
-
         // const a = document.createElement('a')
         // a.href = imgurl
         // a.download = 'myimg.jpeg'
         // a.click()
+
         canvasRef.current.toBlob((blob) => {
           if (blob) {
+            // 将blob
             const imgurl = window.URL.createObjectURL(blob)
             const a = document.createElement('a')
             a.href = imgurl

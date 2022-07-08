@@ -14,3 +14,12 @@ declare module '*.scss' {
   export default content;
 }
 declare module 'react-app-rewire-alias';
+
+declare module '*.asc';
+
+declare module "worker-loader!*" {
+  class WebpackWorker extends Worker {
+    constructor();
+  }
+  export = WebpackWorker;
+}
