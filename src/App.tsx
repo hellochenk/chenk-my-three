@@ -7,7 +7,8 @@ import { pathENUM } from './def';
 
 import styles from './App.module.scss';
 
-// const HelloThreejs = React.lazy(() => import('@/components/hello-threejs'));
+const Home = React.lazy(() => import('@/src/modules/home/index'));
+const R3f = React.lazy(() => import('@/src/modules/r3f/index'));
 
 const App: FC = () => {
   const renderMenu = () => {
@@ -26,7 +27,11 @@ const App: FC = () => {
       <div className={styles.content}>
         <React.Suspense fallback={<div>Loading...</div>}>
           <Routes>
-            
+            <Route path={pathENUM.home} element={<Home />}/>
+            <Route path={pathENUM.r3f} element={<R3f />}/>
+
+            <Route path={'home'} element={<Home />}/>
+            <Route path={'/'} element={<Home />}/>
           </Routes>
         </React.Suspense>
       </div>
