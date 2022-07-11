@@ -2,7 +2,7 @@
 
 use for learn three js
 
-this is guide: [threejs-tutorial](https://github.com/puxiao/threejs-tutorial)
+this is guide: [threejs](https://threejs.org/manual/#zh/primitives) [threejs-tutorial](https://github.com/puxiao/threejs-tutorial) 
 
 # base 
 1. scene
