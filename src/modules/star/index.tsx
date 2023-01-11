@@ -8,7 +8,7 @@ import {
   earthOrbit,
   moonOribit,
   pointLight,
-} from '@/components/star/mesh';
+} from '@/src/modules/star/mesh';
 
 import './index.scss';
 import { AxesHelper } from 'three';
@@ -72,6 +72,7 @@ const HelloScene: FC = () => {
         mainScaleRef.current,
         scene,
       );
+      
       mainControls.addEventListener('change', function () {
         renderer.render(scene, mainCamera);
       });

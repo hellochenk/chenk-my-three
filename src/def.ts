@@ -15,5 +15,6 @@ export enum pathENUM {
   Preserve = 'Preserve',
   bubble = 'bubble',
   earth = 'earth',
-  offscene = 'offscene'
+  offscene = 'offscene',
+  playRX = 'playRX'
 };

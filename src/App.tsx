@@ -7,46 +7,57 @@ import { pathENUM } from './def';
 
 import styles from './App.module.scss';
 
-const HelloThreejs = React.lazy(() => import('@/components/hello-threejs'));
+const HelloThreejs = React.lazy(() => import('@/src/modules/hello-threejs'));
 const HelloThreejsPrime = React.lazy(
-  () => import('@/components/hello-primitives')
+  () => import('@/src/modules/hello-primitives')
 );
-const Star = React.lazy(() => import('@/components/star'));
-const Texture = React.lazy(() => import('@/components/texture'));
-const Light = React.lazy(() => import('@/components/light'));
-const Camera = React.lazy(() => import('@/components/camera'));
-const FakeShadow = React.lazy(() => import('@/components/hello-fake-shadow'));
-const HelloShadow = React.lazy(() => import('@/components/hello-shadow'));
+const Star = React.lazy(() => import('@/src/modules/star'));
+const Texture = React.lazy(() => import('@/src/modules/texture'));
+const Light = React.lazy(() => import('@/src/modules/light'));
+const Camera = React.lazy(() => import('@/src/modules/camera'));
+const FakeShadow = React.lazy(() => import('@/src/modules/hello-fake-shadow'));
+const HelloShadow = React.lazy(() => import('@/src/modules/hello-shadow'));
 const RoomShadow = React.lazy(
-  () => import('@/components/hello-shadow/hello-point-light-shadow')
+  () => import('@/src/modules/hello-shadow/hello-point-light-shadow')
 );
-const MyFog = React.lazy(() => import('@/components/hello-fog'));
-const MyTest = React.lazy(() => import('@/components/test'));
-const MyTarget = React.lazy(() => import('@/components/hello-render-target'));
-const MyDemand = React.lazy(() => import('@/components/rendering-on-demand'));
-const MyHelloCanvas = React.lazy(() => import('@/components/hello-canvas/index'));
-const Preserve = React.lazy(() => import('@/components/Preserve-Drawing-Buffer/index'));
-const MyBubble = React.lazy(() => import('@/components/bubble/index'));
-const HelloEarth = React.lazy(() => import('@/components/hello-earth/index'));
+const MyFog = React.lazy(() => import('@/src/modules/hello-fog'));
+const MyTest = React.lazy(() => import('@/src/modules/test'));
+const MyTarget = React.lazy(() => import('@/src/modules/hello-render-target'));
+const MyDemand = React.lazy(() => import('@/src/modules/rendering-on-demand'));
+const MyHelloCanvas = React.lazy(
+  () => import('@/src/modules/hello-canvas/index')
+);
+const Preserve = React.lazy(
+  () => import('@/src/modules/Preserve-Drawing-Buffer/index')
+);
+const MyBubble = React.lazy(() => import('@/src/modules/bubble/index'));
+const HelloEarth = React.lazy(() => import('@/src/modules/hello-earth/index'));
 
-const HelloOffScene = React.lazy(() => import('@/components/hello-offscreen-canvas/index'));
+const HelloOffScene = React.lazy(
+  () => import('@/src/modules/hello-offscreen-canvas/index')
+);
 
+const PlayRX = React.lazy(
+  () => import('@/src/modules/playrx')
+);
 
 
 const App: FC = () => {
   const renderMenu = () => {
-    let arr = []
+    let arr = [];
     for (let k in pathENUM) {
-      arr.push(<div className={styles.link} key={k}><Link to={k}>{k}</Link></div>)
+      arr.push(
+        <div className={styles.link} key={k}>
+          <Link to={k}>{k}</Link>
+        </div>
+      );
     }
-    return arr
-  }
+    return arr;
+  };
 
   return (
     <div className={styles.container}>
-      <div className={styles.menu}>
-        { renderMenu() }
-      </div>
+      <div className={styles.menu}>{renderMenu()}</div>
       <div className={styles.content}>
         <React.Suspense fallback={<div>Loading...</div>}>
           <Routes>
@@ -67,6 +78,7 @@ const App: FC = () => {
             <Route path={pathENUM.bubble} element={<MyBubble />} />
             <Route path={pathENUM.earth} element={<HelloEarth />} />
             <Route path={pathENUM.offscene} element={<HelloOffScene />} />
+            <Route path={pathENUM.playRX} element={<PlayRX />} />
 
             <Route path='/' element={<HelloThreejsPrime />} />
           </Routes>
